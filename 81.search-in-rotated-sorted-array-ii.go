@@ -6,44 +6,32 @@
 
 // @lc code=start
 func search(nums []int, target int) bool {
-	if len(nums) == 1 && nums[0] != target {
+	if len(nums) == 0 {
 		return false
 	}
-	higher := 0
-	lower := len(nums) - 1
-	if nums[higher] == target || nums[lower] == target {
-		return true
-	}
-	if target < nums[higher] && target > nums[lower] {
-		return false
-	}
-	//lower higher is num; up_bound, down_bound is position
-	medium, up_bound, down_bound := -1, lower, higher
-	if nums[higher] > target {
-		for up_bound >= down_bound {
-			medium = down_bound + (up_bound-down_bound)/2
-			if nums[medium] == target {
-				return true
+	low, high := 0, len(nums)-1
+	for low <= high {
+		mid := low + (high-low)>>1
+		if nums[mid] == target {
+			return true
+		} else if nums[mid] > nums[low] { // 在数值大的一部分区间里
+			if nums[low] <= target && target < nums[mid] {
+				high = mid - 1
 			} else {
-				if nums[medium] > nums[lower] || nums[medium] < target {
-					down_bound = medium + 1
-				} else {
-					up_bound = medium - 1
-				}
+				low = mid + 1
 			}
-		}
-	}
-	if nums[higher] < target {
-		for up_bound >= down_bound {
-			medium = down_bound + (up_bound-down_bound)/2
-			if nums[medium] == target {
-				return true
+		} else if nums[mid] < nums[high] { // 在数值小的一部分区间里
+			if nums[mid] < target && target <= nums[high] {
+				low = mid + 1
 			} else {
-				if nums[medium] < nums[higher] || nums[medium] > target {
-					up_bound = medium - 1
-				} else {
-					down_bound = medium + 1
-				}
+				high = mid - 1
+			}
+		} else {
+			if nums[low] == nums[mid] {
+				low++
+			}
+			if nums[high] == nums[mid] {
+				high--
 			}
 		}
 	}
